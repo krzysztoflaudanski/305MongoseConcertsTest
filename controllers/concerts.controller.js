@@ -19,15 +19,14 @@ exports.getById = async (req, res) => {
   catch (err) {
     res.status(500).json({ message: err });
   }
-
 };
 
 exports.post = async (req, res) => {
 
   try {
 
-    const { performer, genre, price, day, image } = req.body;
-    const newConcert = new Concert({ performer: performer, genre: genre, price: price, day: day, image: image });
+    const { performer, genre, price, day, image, ticket } = req.body;
+    const newConcert = new Concert({ performer: performer, genre: genre, price: price, day: day, image: image, ticket: ticket });
     await newConcert.save();
     res.json({ message: 'OK' });
 
@@ -38,7 +37,7 @@ exports.post = async (req, res) => {
 };
 
 exports.put = async (req, res) => {
-  const { performer, genre, price, day, image } = req.body;
+  const { performer, genre, price, day, image, ticket } = req.body;
 
   try {
     const con = await Concert.findById(req.params.id);
@@ -48,6 +47,7 @@ exports.put = async (req, res) => {
       con.day = day;
       con.price = price;
       con.image = image;
+      con.ticket = ticket;
       await con.save();
       res.json({ message: 'OK' });
     }
@@ -56,7 +56,21 @@ exports.put = async (req, res) => {
   catch (err) {
     res.status(500).json({ message: err });
   }
+};
 
+exports.updateTicketsByDay = async (req, res) => {
+  const { ticket } = req.body;
+  
+  try {
+    const result = await Concert.findOneAndUpdate({ day: req.params.day }, { $set: { ticket: ticket } });
+    if (result) {
+      res.json({ message: 'OK' });
+    } else {
+      res.status(404).json({ message: 'Brak koncertu w tym dniu' });
+    }
+  } catch (err) {
+    res.status(500).json({ message: err });
+  }
 };
 
 exports.delete = async (req, res) => {
@@ -74,3 +88,5 @@ exports.delete = async (req, res) => {
   }
 
 };
+
+
