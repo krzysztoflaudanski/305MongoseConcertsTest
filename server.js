@@ -3,12 +3,14 @@ const cors = require('cors');
 const path = require('path')
 const socketIo = require('socket.io');
 const mongoose = require('mongoose');
+const helmet = require('helmet');
 
 const testimonialsRouter = require('./routes/testimonials.routes'); // Importuj router
 const concertsRouter = require('./routes/concerts.routes');
 const seatsRouter = require('./routes/seats.routes');
 
 const app = express();
+app.use(helmet());
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
