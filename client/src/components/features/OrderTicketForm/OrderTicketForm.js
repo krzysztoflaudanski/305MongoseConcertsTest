@@ -11,7 +11,7 @@ import { updateTickets } from '../../../redux/concertsRedux';
 const OrderTicketForm = () => {
   const dispatch = useDispatch();
   const requests = useSelector(getRequests);
-  const [tickets, setTickets] = useState(1)
+  const [tickets, setTickets] = useState(0);
  
   const [order, setOrder] = useState({
     client: '',
@@ -37,10 +37,10 @@ const OrderTicketForm = () => {
     };
   }, [dispatch]);
 
-  const updateSeat = (e, seatId, leftSeats) => {
+  const updateSeat = (e, seatId) => {
     e.preventDefault();
     setOrder({ ...order, seat: seatId });
-    setTickets(leftSeats - tickets);
+     setTickets(1);
   }
 
   const updateTextField = ({ target }) => {
@@ -66,7 +66,7 @@ const OrderTicketForm = () => {
           seat: '',
         });
         dispatch(updateTickets(order.day, tickets))
-        setTickets(1)
+        setTickets(0);
         setIsError(false);
       } catch (error) {
         setIsError(true);

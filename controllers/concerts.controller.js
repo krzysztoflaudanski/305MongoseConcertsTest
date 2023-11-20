@@ -62,7 +62,9 @@ exports.updateTicketsByDay = async (req, res) => {
   const { ticket } = req.body;
   
   try {
-    const result = await Concert.findOneAndUpdate({ day: req.params.day }, { $set: { ticket: ticket } });
+    const concert = await Concert.findOne({ day: req.params.day });
+    console.log(concert.ticket, ticket)
+    const result = await Concert.findOneAndUpdate({ day: req.params.day }, { $set: { ticket: concert.ticket - ticket } });
     if (result) {
       res.json({ message: 'OK' });
     } else {
