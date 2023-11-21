@@ -6,13 +6,11 @@ import io from 'socket.io-client';
 import './OrderTicketForm.scss';
 import SeatChooser from './../SeatChooser/SeatChooser';
 import { loadSeats } from '../../../redux/seatsRedux';
-import { updateTickets } from '../../../redux/concertsRedux';
 
 const OrderTicketForm = () => {
   const dispatch = useDispatch();
   const requests = useSelector(getRequests);
-  const [tickets, setTickets] = useState(0);
- 
+  
   const [order, setOrder] = useState({
     client: '',
     email: '',
@@ -40,7 +38,6 @@ const OrderTicketForm = () => {
   const updateSeat = (e, seatId) => {
     e.preventDefault();
     setOrder({ ...order, seat: seatId });
-     setTickets(1);
   }
 
   const updateTextField = ({ target }) => {
@@ -65,8 +62,6 @@ const OrderTicketForm = () => {
           day: order.day,
           seat: '',
         });
-        dispatch(updateTickets(order.day, tickets))
-        setTickets(0);
         setIsError(false);
       } catch (error) {
         setIsError(true);

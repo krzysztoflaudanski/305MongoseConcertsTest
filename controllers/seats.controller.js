@@ -1,4 +1,5 @@
 const Seat = require('../models/seat.model');
+const Concert = require('../models/concert.model');
 const sanitize = require('mongo-sanitize');
 
 exports.getAll = async (req, res) => {
@@ -30,9 +31,17 @@ exports.post = async (req, res) => {
     const { day, seat, client, email } = cleanBody;
     const newSeat = new Seat({ day: day, seat: seat, client: client, email: email });
     await newSeat.save();
-    res.json({ message: 'OK' });
     const refreshSeats = await Seat.find();
     req.io.emit('seatsUpdate', refreshSeats);
+    const concert = await Concert.findOne({ day: day });
+    const updatedTickets = concert.ticket - 1
+    const result = await Concert.findOneAndUpdate({ day: day }, { $set: { ticket: updatedTickets } });
+    if (result) {
+      res.json({ message: 'OK' });
+    }
+    else {
+      res.status(404).json({ message: 'Brak koncertu w tym dniu' });
+    }
   } catch (err) {
     res.status(500).json({ message: err });
   }

@@ -58,23 +58,6 @@ exports.put = async (req, res) => {
   }
 };
 
-exports.updateTicketsByDay = async (req, res) => {
-  const { ticket } = req.body;
-  
-  try {
-    const concert = await Concert.findOne({ day: req.params.day });
-    console.log(concert.ticket, ticket)
-    const result = await Concert.findOneAndUpdate({ day: req.params.day }, { $set: { ticket: concert.ticket - ticket } });
-    if (result) {
-      res.json({ message: 'OK' });
-    } else {
-      res.status(404).json({ message: 'Brak koncertu w tym dniu' });
-    }
-  } catch (err) {
-    res.status(500).json({ message: err });
-  }
-};
-
 exports.delete = async (req, res) => {
 
   try {

@@ -16,14 +16,12 @@ const END_REQUEST = createActionName('END_REQUEST');
 const ERROR_REQUEST = createActionName('ERROR_REQUEST');
 
 const LOAD_CONCERTS = createActionName('LOAD_CONCERTS');
-const UPDATE_TICKETS = createActionName('UPDATE_TICKETS');
 
 export const startRequest = () => ({ type: START_REQUEST });
 export const endRequest = () => ({ type: END_REQUEST });
 export const errorRequest = error => ({ error, type: ERROR_REQUEST });
 
 export const loadConcerts = payload => ({ payload, type: LOAD_CONCERTS });
-
 
 /* THUNKS */
 
@@ -32,31 +30,9 @@ export const loadConcertsRequest = () => {
 
     dispatch(startRequest());
     try {
-
       let res = await axios.get(`${API_URL}/concerts`);
       dispatch(loadConcerts(res.data));
       dispatch(endRequest());
-
-    } catch (e) {
-      dispatch(errorRequest(e.message));
-    }
-
-  };
-};
-
-export const updateTickets = (day, ticket) => {
-  return async dispatch => {
-    dispatch(startRequest());
-    console.log(day, ticket)
-    try {
-      const res = await axios.put(`${API_URL}/concerts/day/${day}`, { ticket });
-
-      if (res.data.message === 'OK') {
-        dispatch({ type: UPDATE_TICKETS, payload: { day, ticket } });
-        dispatch(endRequest());
-      } else {
-        dispatch(errorRequest('Failed to update tickets'));
-      }
     } catch (e) {
       dispatch(errorRequest(e.message));
     }
@@ -76,16 +52,10 @@ const initialState = {
 
 /* REDUCER */
 
-
 export default function reducer(statePart = initialState, action = {}) {
   switch (action.type) {
     case LOAD_CONCERTS:
       return { ...statePart, data: [...action.payload] };
-    case UPDATE_TICKETS:
-      const updatedConcerts = statePart.data.map(concert =>
-        concert.day === action.payload.day ? { ...concert, ticket: action.payload.ticket } : concert
-      );
-      return { ...statePart, data: updatedConcerts, request: { pending: false, error: null, success: true } };
     case START_REQUEST:
       return { ...statePart, request: { pending: true, error: null, success: false } };
     case END_REQUEST:

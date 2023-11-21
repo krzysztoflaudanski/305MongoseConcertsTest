@@ -45,6 +45,7 @@ export const loadSeatsRequest = () => {
 };
 
 export const addSeatRequest = (seat) => {
+  console.log(seat)
   return async dispatch => {
     dispatch(startRequest({ name: 'ADD_SEAT' }));
     try {
